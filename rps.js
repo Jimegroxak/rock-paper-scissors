@@ -9,19 +9,14 @@ function getComputerChoice() {
     else return 'scissors';
 }
 
-function getHumanChoice() {
-    let playerChoice = prompt("Choose your weapons (rock, paper, or scissors)");
-    return playerChoice;
-}
-
 function playRound(computerChoice, humanChoice) {
     let cleanedHumanChoice = humanChoice.toLowerCase()
     let winnerMessage = ''
 
     // handle ties
     if (cleanedHumanChoice === computerChoice) {
-        console.log(`Tie! You both picked ${cleanedHumanChoice}`);
-        console.log(`Your score: ${humanScore}\nComputer score: ${computerScore}`);
+        results.textContent = `Tie! You both picked ${cleanedHumanChoice}`;
+        score.textContent = `Your score: ${humanScore}\nComputer score: ${computerScore}`;
         return;
     }
 
@@ -56,22 +51,60 @@ function playRound(computerChoice, humanChoice) {
     }
 
     if (winnerMessage === "You win!")
-        console.log(`${winnerMessage} ${cleanedHumanChoice} beats ${computerChoice}`);
+        results.textContent = `${winnerMessage} ${cleanedHumanChoice} beats ${computerChoice}`;
     else
-        console.log(`${winnerMessage} ${computerChoice} beats ${cleanedHumanChoice}`);
-    console.log(`Your score: ${humanScore}\nComputer score: ${computerScore}`);
+        results.textContent = `${winnerMessage} ${computerChoice} beats ${cleanedHumanChoice}`;
+    score.textContent = `Your score: ${humanScore}\nComputer score: ${computerScore}`;
+    
+    if (humanScore === 5) gameOver("you");
+    else if (computerScore === 5) gameOver("computer");
 }
 
-function playMultipleRounds(rounds) {
-    for (let i = 0; i < rounds; i++) {
-        const computerChoice = getComputerChoice();
-        const humanChoice = getHumanChoice();
+function gameOver(winner) {
+    alert(`${winner} wins!`);
+    humanScore = 0;
+    computerScore = 0;
+}
 
-        playRound(computerChoice, humanChoice);
+const buttons = document.createElement("div");
+buttons.addEventListener("click", (event) => {
+    let target = event.target;
+
+    switch (target.id) {
+        case 'rockButton':
+            playRound(getComputerChoice(), 'rock');
+            break;
+        case 'paperButton':
+            playRound(getComputerChoice(), 'paper');
+            break;
+        case 'scissorsButton':
+            playRound(getComputerChoice(), 'scissors');
+            break;
+
     }
+})
 
-    console.log("Game over!");
-    console.log(`Final score: You: ${humanScore}, Computer: ${computerScore}`);
-}
+// create choice buttons
+const rockButton = document.createElement("button");
+rockButton.id = "rockButton";
+rockButton.textContent = "ROCK";
+buttons.appendChild(rockButton);
 
-playMultipleRounds(5);
+const paperButton = document.createElement("button");
+paperButton.id = "paperButton";
+paperButton.textContent = "PAPER";
+buttons.appendChild(paperButton);
+
+const scissorsButton = document.createElement("button");
+scissorsButton.id = "scissorsButton";
+scissorsButton.textContent = "SCISSORS";
+buttons.appendChild(scissorsButton);
+
+// setup page
+const body = document.querySelector("body");
+body.appendChild(buttons);
+
+const results = document.createElement("div");
+const score = document.createElement("div");
+body.appendChild(results);
+body.appendChild(score);
